@@ -1,6 +1,12 @@
-﻿class Arena {
+﻿interface SignalR {
+    arena: any;
+}
+
+class Arena {
     public static instance: Arena;
     public stage: createjs.Stage;
+    private hub = $.connection.arena;
+    private connected: boolean = false;
 
     constructor() {
         Arena.instance = this;
@@ -16,6 +22,19 @@
         bot.x = 200;
         bot.y = 100;
         bot.speed = 3;
+
+        // Initialize SignalR
+        this.hub.client.botUpdate = (bot) => {
+            this.rBotUpdate(bot);
+        };
+
+        $.connection.hub.start().done(() => {
+            this.connected = true;
+        });
+    }
+
+    private rBotUpdate(bot) {
+
     }
 
     public update() {

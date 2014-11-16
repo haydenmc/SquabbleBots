@@ -47,6 +47,8 @@ var Bot = (function (_super) {
 var Arena = (function () {
     function Arena() {
         var _this = this;
+        this.hub = $.connection.arena;
+        this.connected = false;
         Arena.instance = this;
         this.stage = new createjs.Stage(document.getElementById("Arena"));
         createjs.Ticker.setFPS(60);
@@ -59,7 +61,16 @@ var Arena = (function () {
         bot.x = 200;
         bot.y = 100;
         bot.speed = 3;
+        // Initialize SignalR
+        this.hub.client.botUpdate = function (bot) {
+            _this.rBotUpdate(bot);
+        };
+        $.connection.hub.start().done(function () {
+            _this.connected = true;
+        });
     }
+    Arena.prototype.rBotUpdate = function (bot) {
+    };
     Arena.prototype.update = function () {
         this.stage.update();
     };
