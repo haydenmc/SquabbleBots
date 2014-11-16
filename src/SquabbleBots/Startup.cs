@@ -11,6 +11,7 @@ using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
+using SquabbleBots.Hubs;
 
 namespace SquabbleBots
 {
@@ -41,6 +42,8 @@ namespace SquabbleBots
             services.AddMvc();
 
             services.AddSignalR();
+
+            services.AddSingleton<ISimulator, ArenaSimulator>();
 
             // Uncomment the following line to add Web API servcies which makes it easier to port Web API 2 controllers.
             // You need to add Microsoft.AspNet.Mvc.WebApiCompatShim package to project.json

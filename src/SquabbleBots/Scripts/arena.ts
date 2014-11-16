@@ -7,6 +7,7 @@ class Arena {
     public stage: createjs.Stage;
     private hub = $.connection.arena;
     private connected: boolean = false;
+    private bots: { [botId: string]: Bot } = {};
 
     constructor() {
         Arena.instance = this;
@@ -16,25 +17,37 @@ class Arena {
             this.update();
         });
 
-        // create a dummy bot just to test
-        var bot = new Bot();
-        this.stage.addChild(bot);
-        bot.x = 200;
-        bot.y = 100;
-        bot.speed = 3;
-
         // Initialize SignalR
-        this.hub.client.botUpdate = (bot) => {
-            this.rBotUpdate(bot);
-        };
+        this.hub.client.updateBots = (botList: Array<Bot>) => this.updateBots(botList);
 
         $.connection.hub.start().done(() => {
             this.connected = true;
         });
     }
 
-    private rBotUpdate(bot) {
+    private updateBots(botList: Array<Bot>) {
+        for (var i = 0; i < botList.length; i++) {
+            // Attempt to grab bot from the list
+            var b = botList[i];
 
+            // If not in the list, create a new bot instance
+            if (this.bots[b.botId]) {
+                var bot = this.bots[b.botId];
+            } else {
+                var bot = new Bot();
+                bot.botId = b.botId;
+                this.stage.addChild(bot);
+                this.bots[bot.botId] = bot;
+                console.log("Added new bot: " + b.botId);
+            }
+
+            // Update properties from server
+            bot.x = b.x;
+            bot.y = b.y;
+            bot.speed = b.speed;
+            bot.movementAngle = b.movementAngle;
+            bot.aimAngle = b.aimAngle;
+        }
     }
 
     public update() {

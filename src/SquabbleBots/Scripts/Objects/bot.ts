@@ -3,6 +3,7 @@
     private base: createjs.Bitmap;
     private turret: createjs.Bitmap;
 
+    public botId: string;
     public movementAngle: number = 0;
     public aimAngle: number = 0;
     public speed: number = 0;
@@ -27,9 +28,6 @@
     }
 
     public _tick(): void {
-        // Just an experiment
-        this.movementAngle += 1;
-
         // Check to make sure direction / rotation doesn't exceed 180
         if (this.movementAngle >= 360) {
             this.movementAngle = 0;

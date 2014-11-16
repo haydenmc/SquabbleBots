@@ -26,8 +26,6 @@ var Bot = (function (_super) {
         this.addChild(this.turret);
     }
     Bot.prototype._tick = function () {
-        // Just an experiment
-        this.movementAngle += 1;
         // Check to make sure direction / rotation doesn't exceed 180
         if (this.movementAngle >= 360) {
             this.movementAngle = 0;
@@ -49,27 +47,41 @@ var Arena = (function () {
         var _this = this;
         this.hub = $.connection.arena;
         this.connected = false;
+        this.bots = {};
         Arena.instance = this;
         this.stage = new createjs.Stage(document.getElementById("Arena"));
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", function () {
             _this.update();
         });
-        // create a dummy bot just to test
-        var bot = new Bot();
-        this.stage.addChild(bot);
-        bot.x = 200;
-        bot.y = 100;
-        bot.speed = 3;
         // Initialize SignalR
-        this.hub.client.botUpdate = function (bot) {
-            _this.rBotUpdate(bot);
-        };
+        this.hub.client.updateBots = function (botList) { return _this.updateBots(botList); };
         $.connection.hub.start().done(function () {
             _this.connected = true;
         });
     }
-    Arena.prototype.rBotUpdate = function (bot) {
+    Arena.prototype.updateBots = function (botList) {
+        for (var i = 0; i < botList.length; i++) {
+            // Attempt to grab bot from the list
+            var b = botList[i];
+            // If not in the list, create a new bot instance
+            if (this.bots[b.botId]) {
+                var bot = this.bots[b.botId];
+            }
+            else {
+                var bot = new Bot();
+                bot.botId = b.botId;
+                this.stage.addChild(bot);
+                this.bots[bot.botId] = bot;
+                console.log("Added new bot: " + b.botId);
+            }
+            // Update properties from server
+            bot.x = b.x;
+            bot.y = b.y;
+            bot.speed = b.speed;
+            bot.movementAngle = b.movementAngle;
+            bot.aimAngle = b.aimAngle;
+        }
     };
     Arena.prototype.update = function () {
         this.stage.update();
