@@ -66,9 +66,8 @@ namespace SquabbleBots.Hubs
             _bots.Add(new Bot()
             {
                 BotId = Guid.NewGuid(),
-                X = 120,
-                Y = 200,
-                Speed = 3
+                X = 100,
+                Y = 100
             });
         }
 
