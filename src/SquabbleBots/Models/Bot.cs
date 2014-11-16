@@ -19,9 +19,7 @@ namespace SquabbleBots.Models
             // Execute javascript
             var botRemote = new BotRemoteJs(this);
             var jsEngine = new Engine().SetValue("robot", botRemote)
-                .Execute("robot.movementAngle += 1;")
-                .Execute("robot.aimAngle -= 1;")
-                .Execute("robot.speed = 3;");
+                .Execute(UpdateScriptJs);
 
             // Process movement
             X += Math.Cos((MovementAngle * Math.PI) / 180) * Speed;

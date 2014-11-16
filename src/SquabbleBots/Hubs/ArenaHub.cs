@@ -67,7 +67,24 @@ namespace SquabbleBots.Hubs
             {
                 BotId = Guid.NewGuid(),
                 X = 100,
-                Y = 100
+                Y = 100,
+                UpdateScriptJs = "robot.movementAngle += 1; robot.aimAngle -= 1; robot.speed = 3;"
+            });
+
+            _bots.Add(new Bot()
+            {
+                BotId = Guid.NewGuid(),
+                X = 200,
+                Y = 200,
+                UpdateScriptJs = "robot.movementAngle += 3; robot.aimAngle -= 6; robot.speed = 5;"
+            });
+
+            _bots.Add(new Bot()
+            {
+                BotId = Guid.NewGuid(),
+                X = 300,
+                Y = 300,
+                UpdateScriptJs = "robot.movementAngle += 2; robot.aimAngle -= 8; robot.speed = 4;"
             });
         }
 
